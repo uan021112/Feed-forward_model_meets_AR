@@ -3,6 +3,7 @@
 **Authors:** Tianchi Luan, [Yuze Wang](https://yuzewang1998.github.io/), Junyi Wang, Minghuan Liu, Chen Wang, Yue Qi
 
 IGGT-based FastAPI backend for on-the-fly mobile AR tour deployment with metric 3D semantic mapping, persistent object instances, confidence-aware reference views, and runtime camera-pose refinement.
+![System teaser](assets/teaser@4x-8.png)
 
 ## Architecture
 
