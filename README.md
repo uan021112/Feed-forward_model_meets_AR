@@ -1,4 +1,6 @@
-# Feed-forward Visual Geometry Model Meets AR
+# Feed-Forward Visual Geometry Model Meets AR: An On-the-fly Mobile AR Tour Deployment Framework with 3D Semantic Mapping and Camera Pose Refinement (Under review)
+
+**Authors:** Tianchi Luan, [Yuze Wang](https://yuzewang1998.github.io/), Junyi Wang, Minghuan Liu, Chen Wang, Yue Qi
 
 IGGT-based FastAPI backend for on-the-fly mobile AR tour deployment with metric 3D semantic mapping, persistent object instances, confidence-aware reference views, and runtime camera-pose refinement.
 
