@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICXR 3D Reconstruction Demo</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f0f2f5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    color: #1a1a2e;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cards {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .card {
+    display: block;
+    width: 340px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 14px;
+    padding: 36px 28px;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+  }
+
+  .card-icon {
+    font-size: 42px;
+    margin-bottom: 18px;
+    line-height: 1;
+  }
+
+  .card-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1a1a2e;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div class="cards">
+  <a class="card" href="/3d">
+    <div class="card-icon">🗺️</div>
+    <div class="card-title">3D Reconstruction Demo</div>
+    <div class="card-desc">Upload a zip file of images, reconstruct an IGGT geometry and LSeg semantic mesh, then query the persistent object catalog.</div>
+  </a>
+
+  <a class="card" href="/3d">
+    <div class="card-icon">🏗️</div>
+    <div class="card-title">2D Depth Demo</div>
+    <div class="card-desc" style="opacity:0.5">(Coming soon) Single-image geometry and semantic feature visualization.</div>
+  </a>
+</div>
+
+</body>
+</html>

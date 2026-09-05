@@ -1,0 +1,43 @@
+# OMC
+.omc/
+.claude/
+CLAUDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Uploads / runtime
+uploads/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+
+# mypy
+.mypy_cache/

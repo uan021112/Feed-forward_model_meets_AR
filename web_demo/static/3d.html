@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Reconstruction & Semantic Query</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #f0f2f5;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+    color: #1a1a2e;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  #canvas-container {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+
+  canvas { display: block; }
+
+  /* ── overlay panels ── */
+  .overlay {
+    position: fixed;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    border-radius: 10px;
+    padding: 14px 16px;
+    pointer-events: auto;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+
+  /* ── top-left: query + upload controls ── */
+  #panel-controls {
+    top: 18px;
+    left: 18px;
+    width: 320px;
+  }
+
+  #panel-controls label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #666;
+    margin-bottom: 4px;
+  }
+
+  .section {
+    margin-bottom: 12px;
+  }
+  .section:last-child { margin-bottom: 0; }
+
+  #panel-controls input[type="text"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 6px;
+    background: #fff;
+    color: #1a1a2e;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #panel-controls input[type="text"]:focus {
+    border-color: #3a7bd5;
+  }
+
+  #panel-controls input[type="file"] {
+    width: 100%;
+    padding: 6px 8px;
+    font-size: 12px;
+    color: #333;
+    border: 1px dashed rgba(0, 0, 0, 0.18);
+    border-radius: 6px;
+    background: #fafafa;
+  }
+
+  #panel-controls button {
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, background 0.2s;
+  }
+  #panel-controls button:active { transform: scale(0.98); }
+
+  .btn-query {
+    background: #3a7bd5;
+    color: #fff;
+  }
+  .btn-query:hover { background: #4a8be5; }
+
+  .btn-upload {
+    background: #2d6a4f;
+    color: #fff;
+  }
+  .btn-upload:hover { background: #3d7a5f; }
+
+  .row { display: flex; gap: 6px; }
+  .row button { flex: 1; }
+
+  #query-status {
+    margin-top: 6px;
+    font-size: 11px;
+    color: #3a7bd5;
+    min-height: 14px;
+  }
+
+  /* ── bottom-left: legend ── */
+  #panel-legend {
+    bottom: 18px;
+    left: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+  }
+
+  #legend-label-min, #legend-label-max {
+    font-size: 11px;
+    color: #555;
+    font-variant-numeric: tabular-nums;
+  }
+
+  #legend-bar {
+    width: 180px;
+    height: 14px;
+    border-radius: 4px;
+    background: linear-gradient(to right, hsl(240, 90%, 30%), hsl(0, 90%, 60%));
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  /* ── bottom-right: point/mesh info display ── */
+  #panel-info {
+    bottom: 18px;
+    right: 18px;
+    font-size: 12px;
+    color: #555;
+    min-width: 100px;
+    text-align: right;
+  }
+
+  #info-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a2e;
+    display: block;
+  }
+
+  /* ── loading spinner ── */
+  #loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(240, 242, 245, 0.75);
+    backdrop-filter: blur(4px);
+  }
+  #loading-overlay.active { display: flex; }
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid rgba(0, 0, 0, 0.10);
+    border-top-color: #3a7bd5;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    margin-left: 16px;
+    font-size: 14px;
+    color: #555;
+  }
+</style>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+
+<!-- ── top-left: query + upload controls ── -->
+<div id="panel-controls" class="overlay">
+
+  <div class="section">
+    <label>Upload Zip (images to reconstruct)</label>
+    <input type="file" id="upload-input" accept=".zip">
+    <button class="btn-upload" id="btn-upload" style="margin-top:6px">Upload &amp; Reconstruct</button>
+  </div>
+
+  <div class="section">
+    <label for="query-input">Text Query</label>
+    <input type="text" id="query-input" placeholder="e.g. floor, wall, chair…" autofocus disabled>
+    <button class="btn-query" id="btn-query" disabled>Query object catalog</button>
+    <div id="query-status"></div>
+  </div>
+
+</div>
+
+<!-- ── bottom-left: color legend ── -->
+<div id="panel-legend" class="overlay">
+  <span id="legend-label-min">0.0</span>
+  <div id="legend-bar"></div>
+  <span id="legend-label-max">1.0</span>
+</div>
+
+<!-- ── bottom-right: info display ── -->
+<div id="panel-info" class="overlay">
+  <span id="info-label">READY</span>
+  <span id="info-value" style="font-size:13px">Upload a zip to start</span>
+</div>
+
+<!-- ── loading spinner ── -->
+<div id="loading-overlay">
+  <div class="spinner"></div>
+  <span class="loading-text">Processing…</span>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module" src="/3d.js"></script>
+
+</body>
+</html>

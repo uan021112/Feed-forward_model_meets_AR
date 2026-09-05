@@ -1,0 +1,38 @@
+[project]
+name = "icxr-backend"
+version = "0.1.0"
+description = "Web 3D reconstruction backend service"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "python-dotenv>=1.0.0",
+    "python-multipart>=0.0.18",
+    "opencv-python>=4.10.0",
+    "torch>=2.0.0",
+    "torchvision>=0.15.0",
+    "scipy>=1.10.0",
+    "pillow>=9.0.0",
+    "huggingface_hub>=0.24.0",
+    "transformers>=4.57.1,<5",
+    "pytorch-lightning>=1.4.9",
+    "open3d>=0.18.0",
+    "trimesh>=4.0.0",
+    "imageio>=2.37.0",
+    "safetensors>=0.4.0",
+    "omegaconf>=2.3.0",
+    "einops>=0.7.0",
+    "timm>=0.4.12,<0.5",
+    "flask>=3.0.0",
+    "requests>=2.28.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
