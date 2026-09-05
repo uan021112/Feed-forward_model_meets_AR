@@ -1,6 +1,6 @@
 # Feed-Forward Visual Geometry Model Meets AR: An On-the-fly Mobile AR Tour Deployment Framework with 3D Semantic Mapping and Camera Pose Refinement (Under review)
 
-**Authors:** Tianchi Luan, [Yuze Wang](https://yuzewang1998.github.io/), Junyi Wang, Minghuan Liu, Chen Wang, Yue Qi
+**Authors:** Tianchi Luan, [Yuze Wang](https://yuzewang1998.github.io/), Junyi Wang, Minghuan Liu, Chen Wang, Yue Qi<br>
 
 ![System teaser](assets/teaser@4x-8.png)
 
